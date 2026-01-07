@@ -27,28 +27,28 @@ const RollDice = () => {
     const Bet = async (e) => {
         e.preventDefault();
         const response = fetch(`http://localhost:8080/roll/bet?value=${betInput}`, { method: 'GET'})
-            .then(response => {
-                if (!response.ok){
-                    throw new Error('Network failed');
-                }
-                return response.text();
-            })
+            .then(response => response.json())
             .then(data => {
-                setBetSuccess(data);
-            })
-            .catch(error => {
-                setError(error.message);
+                console.log(data.success);
+                console.log(data.rolled);
+
+                setBetSuccess(data.success);
+                setRollBetValue(data.rolled);
             })
     }
 
     return (
         <>
             <div style={{
+                width: '300px',
                 padding: '20px',
                 border: '1px solid',
                 borderRadius: 10}}>
 
-                <div><h1>Roll the Dice!</h1></div>
+                <div>
+                    <h1>Roll the Dice!</h1>
+                    <p style={{textAlign: 'left'}}>Roll a six-sided die and get a number between 1 and 6.</p>
+                </div>
 
                 <div>
                     <button onClick={Roll}>ROLL</button>
@@ -61,20 +61,26 @@ const RollDice = () => {
                 </div>
             </div>
             <div style={{
+                width: '300px',
                 padding: '20px',
                 border: '1px solid',
                 borderRadius: 10}}>
 
-                <div><h1>Test your Luck!</h1></div>
+                <div>
+                    <h1>Test your Luck!</h1>
+                    <p style={{textAlign: 'left'}}>Bet on a value between 1 and 6 and see if you roll it.</p>
+                </div>
 
                 <form onSubmit={Bet}>
                     <input
                         type={'text'}
                         value={betInput}
                         onChange={(e) => setBetInput(e.target.value)}
-                        placeholder='bet on a number from 1-6.'
+                        placeholder='1-6'
                         style={{
-                            margin: '0px 10px'
+                            margin: '0px 10px',
+                            width: '50px',
+                            textAlign: 'center'
                         }}
                     />
 
@@ -83,9 +89,10 @@ const RollDice = () => {
                     </button>
                 </form>
 
-                {betSuccess && (
+                {(betSuccess !== null && rollBetValue !== null) && (
                     <div>
-                        <h3> You Bet: {betInput} | Bet Success: {betSuccess}</h3>
+                        <h3>You Bet: {betInput} | Rolled: {rollBetValue}</h3>
+                        <p>{betSuccess ? "You Won!" : "You Lost!"}</p>
                     </div>
                 )}
             </div>

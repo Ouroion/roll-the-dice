@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.Random;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -19,9 +20,12 @@ public class RollRandom {
     }
 
     @GetMapping("/bet")
-    public boolean bet(int value) {
+    public Map<String, Object> bet(int value) {
         rando = rollRandomNumber();
-        return value == rando;
+        return Map.of(
+                "success", value == rando,
+                "rolled", rando
+        );
     }
 
 }
