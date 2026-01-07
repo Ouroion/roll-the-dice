@@ -2,30 +2,48 @@ import React, {useState} from 'react';
 
 const RollDice = () => {
     const [rollValue, setRollValue] = useState(null);
+    const [error, setError] = useState(null);
 
     const Roll = () =>{
-            fetch('http://localhost:8080/roll/random-number', { method: 'GET'})
-                .then(data => data.json())
-                .then(json => alert (JSON.stringify(json)))
+        const response = fetch('http://localhost:8080/roll/random-number', { method: 'GET'})
+            .then(response => {
+                if (!response.ok){
+                    throw new Error('Network failed');
+                }
+                return response.text();
+            })
+            .then(data => {
+                setRollValue(data);
+            })
+            .catch(error => {
+                setError(error.message);
+            })
+
+    }
+
+    if (error) {
+        <div> Error: {error} </div>;
     }
 
     return (
         <>
-            <div>
-                <h1>Roll the Dice!</h1>
-            </div>
+            <div style={{
+                padding: '20px',
+                border: '1px solid',
+                borderRadius: 10}}>
 
-            <div>
-                <form onSubmit={Roll}>
-                    <button type="submit">ROLL</button>
-                </form>
+                <div><h1>Roll the Dice!</h1></div>
 
-                {rollValue && (
-                    <div>
-                        <h3> You Got: </h3>
-                        <p><strong>{rollValue}</strong></p>
-                    </div>
-                )}
+                <div>
+                    <button onClick={Roll}>ROLL</button>
+
+                    {rollValue && (
+                        <div>
+                            <h3> You Got: </h3>
+                            <p><strong>{rollValue}</strong></p>
+                        </div>
+                    )}
+                </div>
             </div>
         </>
     )
