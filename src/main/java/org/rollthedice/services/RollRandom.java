@@ -12,9 +12,16 @@ import java.util.Random;
 @RequestMapping("/roll")
 public class RollRandom {
     private final Random ran = new Random();
-
+    private int rando = -1;
     @GetMapping("/random-number")
     public int rollRandomNumber(){
-        return (ran.nextInt(7));
+        return (ran.nextInt(6)+1);
     }
+
+    @GetMapping("/bet")
+    public boolean bet(int value) {
+        rando = rollRandomNumber();
+        return value == rando;
+    }
+
 }
